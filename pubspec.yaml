@@ -1,0 +1,38 @@
+name: club_fitness_app
+description: >
+  App móvil del gimnasio Fitness Club (Jocotenango, Sacatepéquez) para
+  seguimiento de rutinas y nutrición. Proyecto de graduación,
+  Ingeniería en Sistemas de Información, UMG.
+publish_to: "none"
+version: 0.1.0
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+
+  # Estado
+  provider: ^6.1.2
+
+  # Red / API
+  dio: ^5.4.3
+  flutter_secure_storage: ^9.0.0
+
+  # Gráficas de progreso (dashboard, perfil)
+  fl_chart: ^0.68.0
+
+  # Utilidades
+  intl: ^0.19.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/icons/
