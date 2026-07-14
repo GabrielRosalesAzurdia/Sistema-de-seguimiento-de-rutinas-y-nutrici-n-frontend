@@ -7,6 +7,7 @@ import '../services/nutrition_service.dart';
 import '../services/tracking_service.dart';
 import '../widgets/macro_pill.dart';
 import '../widgets/metric_card.dart';
+import '../widgets/weight_chart.dart';
 
 /// Pantalla 'Inicio': réplica funcional del mockup (página 3):
 /// peso actual/meta, % grasa y agua corporal (calculados por el
@@ -28,6 +29,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   NutritionPlan? _plan;
   int? _daysToGoal;
   TrackingSummary? _summary;
+  List<WeightPoint> _weightHistory = [];
   NutritionCheckStatus? _todayStatus;
   bool _loading = true;
 
@@ -44,12 +46,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
         _nutritionService.getMyCurrentPlan(),
         _trackingService.getDaysToGoal(),
         _trackingService.getSummary(),
+        _trackingService.getWeightHistory(),
       ]);
       setState(() {
         _member = results[0] as Member;
         _plan = results[1] as NutritionPlan?;
         _daysToGoal = results[2] as int?;
         _summary = results[3] as TrackingSummary?;
+        _weightHistory = results[4] as List<WeightPoint>;
         _loading = false;
       });
     } catch (_) {
@@ -83,6 +87,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 'Bienvenido de nuevo, ${_member?.fullName.split(' ').first ?? ''}',
                 style: const TextStyle(color: AppColors.textSecondary)),
             const SizedBox(height: 16),
+            WeightChartCard(member: _member, history: _weightHistory),
+            const SizedBox(height: 20),
             _MetricsGrid(
                 member: _member, daysToGoal: _daysToGoal, summary: _summary),
             const SizedBox(height: 20),
@@ -119,13 +125,6 @@ class _MetricsGrid extends StatelessWidget {
       crossAxisSpacing: 12,
       childAspectRatio: 1.6,
       children: [
-        MetricCard(
-          label: 'PESO ACTUAL / META',
-          value: member?.currentWeightKg != null
-              ? '${member!.currentWeightKg} / ${member!.goalWeightKg ?? '-'} kg'
-              : '-',
-          color: AppColors.yellow,
-        ),
         MetricCard(
           label: 'P. GRASA CORPORAL',
           value: member?.bodyFatPercentage != null

@@ -35,6 +35,19 @@ class TrackingSummary {
       );
 }
 
+/// Un punto del historial de peso (ver GET /api/tracking/me/weight-history/).
+class WeightPoint {
+  final DateTime date;
+  final double weightKg;
+
+  WeightPoint({required this.date, required this.weightKg});
+
+  factory WeightPoint.fromJson(Map<String, dynamic> json) => WeightPoint(
+        date: DateTime.parse(json['date']),
+        weightKg: (json['weight_kg'] as num).toDouble(),
+      );
+}
+
 class TrackingService {
   final _client = ApiClient.instance;
 
@@ -63,5 +76,14 @@ class TrackingService {
   Future<TrackingSummary> getSummary() async {
     final response = await _client.dio.get('/tracking/me/summary/');
     return TrackingSummary.fromJson(response.data);
+  }
+
+  /// Historial de peso (mediciones mensuales del coach) para la
+  /// gráfica de la card 'PESO ACTUAL / META'.
+  Future<List<WeightPoint>> getWeightHistory() async {
+    final response = await _client.dio.get('/tracking/me/weight-history/');
+    return (response.data as List)
+        .map((e) => WeightPoint.fromJson(e))
+        .toList();
   }
 }
