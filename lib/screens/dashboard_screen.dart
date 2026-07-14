@@ -5,6 +5,8 @@ import '../models/nutrition_plan.dart';
 import '../services/member_service.dart';
 import '../services/nutrition_service.dart';
 import '../services/tracking_service.dart';
+import '../widgets/macro_pill.dart';
+import '../widgets/metric_card.dart';
 
 /// Pantalla 'Inicio': réplica funcional del mockup (página 3):
 /// peso actual/meta, % grasa y agua corporal (calculados por el
@@ -109,64 +111,33 @@ class _MetricsGrid extends StatelessWidget {
       crossAxisSpacing: 12,
       childAspectRatio: 1.6,
       children: [
-        _MetricCard(
+        MetricCard(
           label: 'PESO ACTUAL / META',
           value: member?.currentWeightKg != null
               ? '${member!.currentWeightKg} / ${member!.goalWeightKg ?? '-'} kg'
               : '-',
           color: AppColors.yellow,
         ),
-        _MetricCard(
+        MetricCard(
           label: 'P. GRASA CORPORAL',
           value: member?.bodyFatPercentage != null
               ? '${member!.bodyFatPercentage}%'
               : '-',
           color: AppColors.orange,
         ),
-        _MetricCard(
+        MetricCard(
           label: 'P. AGUA CORPORAL',
           value: member?.bodyWaterPercentage != null
               ? '${member!.bodyWaterPercentage}%'
               : '-',
           color: AppColors.green,
         ),
-        _MetricCard(
+        MetricCard(
           label: 'DÍAS PARA META',
           value: daysToGoal != null ? '$daysToGoal d' : '-',
           color: AppColors.yellow,
         ),
       ],
-    );
-  }
-}
-
-class _MetricCard extends StatelessWidget {
-  final String label;
-  final String value;
-  final Color color;
-
-  const _MetricCard(
-      {required this.label, required this.value, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(value,
-                style: TextStyle(
-                    fontSize: 20, fontWeight: FontWeight.bold, color: color)),
-            const SizedBox(height: 4),
-            Text(label,
-                style: const TextStyle(
-                    fontSize: 11, color: AppColors.textSecondary)),
-          ],
-        ),
-      ),
     );
   }
 }
@@ -190,35 +161,14 @@ class _NutritionMacros extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _MacroPill('PROTEÍNA', plan?.proteinG, AppColors.green),
-                _MacroPill('CARBOHIDRATOS', plan?.carbsG, AppColors.yellow),
-                _MacroPill('GRASAS', plan?.fatsG, AppColors.orange),
+                MacroPill('PROTEÍNA', plan?.proteinG, AppColors.green),
+                MacroPill('CARBOHIDRATOS', plan?.carbsG, AppColors.yellow),
+                MacroPill('GRASAS', plan?.fatsG, AppColors.orange),
               ],
             ),
           ],
         ),
       ),
-    );
-  }
-}
-
-class _MacroPill extends StatelessWidget {
-  final String label;
-  final int? grams;
-  final Color color;
-  const _MacroPill(this.label, this.grams, this.color);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(grams != null ? '${grams}g' : '-',
-            style: TextStyle(
-                fontSize: 18, fontWeight: FontWeight.bold, color: color)),
-        Text(label,
-            style:
-                const TextStyle(fontSize: 10, color: AppColors.textSecondary)),
-      ],
     );
   }
 }

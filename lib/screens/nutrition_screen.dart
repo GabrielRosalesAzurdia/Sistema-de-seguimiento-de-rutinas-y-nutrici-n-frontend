@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../core/theme.dart';
 import '../models/nutrition_plan.dart';
 import '../services/nutrition_service.dart';
+import '../widgets/macro_pill.dart';
 
 class NutritionScreen extends StatefulWidget {
   const NutritionScreen({super.key});
@@ -56,9 +57,9 @@ class _NutritionScreenState extends State<NutritionScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          _MacroChip('CARBOHIDRATOS', plan.carbsG, AppColors.yellow),
-                          _MacroChip('PROTEÍNAS', plan.proteinG, AppColors.green),
-                          _MacroChip('GRASAS', plan.fatsG, AppColors.orange),
+                          MacroPill('CARBOHIDRATOS', plan.carbsG, AppColors.yellow),
+                          MacroPill('PROTEÍNAS', plan.proteinG, AppColors.green),
+                          MacroPill('GRASAS', plan.fatsG, AppColors.orange),
                         ],
                       ),
                       const SizedBox(height: 16),
@@ -71,23 +72,6 @@ class _NutritionScreenState extends State<NutritionScreen> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _MacroChip extends StatelessWidget {
-  final String label;
-  final int grams;
-  final Color color;
-  const _MacroChip(this.label, this.grams, this.color);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text('${grams}g', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: color)),
-        Text(label, style: const TextStyle(fontSize: 10, color: AppColors.textSecondary)),
-      ],
     );
   }
 }
