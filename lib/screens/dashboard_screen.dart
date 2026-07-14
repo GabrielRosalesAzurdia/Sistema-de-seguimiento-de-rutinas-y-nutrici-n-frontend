@@ -27,6 +27,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Member? _member;
   NutritionPlan? _plan;
   int? _daysToGoal;
+  TrackingSummary? _summary;
   NutritionCheckStatus? _todayStatus;
   bool _loading = true;
 
@@ -42,11 +43,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
         _memberService.getMyProfile(),
         _nutritionService.getMyCurrentPlan(),
         _trackingService.getDaysToGoal(),
+        _trackingService.getSummary(),
       ]);
       setState(() {
         _member = results[0] as Member;
         _plan = results[1] as NutritionPlan?;
         _daysToGoal = results[2] as int?;
+        _summary = results[3] as TrackingSummary?;
         _loading = false;
       });
     } catch (_) {
@@ -80,12 +83,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 'Bienvenido de nuevo, ${_member?.fullName.split(' ').first ?? ''}',
                 style: const TextStyle(color: AppColors.textSecondary)),
             const SizedBox(height: 16),
-            _MetricsGrid(member: _member, daysToGoal: _daysToGoal),
+            _MetricsGrid(
+                member: _member, daysToGoal: _daysToGoal, summary: _summary),
             const SizedBox(height: 20),
             _NutritionMacros(plan: _plan),
             const SizedBox(height: 20),
             _NutritionSemaphore(
                 selected: _todayStatus, onSelect: _markNutrition),
+            const SizedBox(height: 20),
+            _TotalCaloriesCard(summary: _summary),
             const SizedBox(height: 20),
             const _TodayRoutineCard(),
           ],
@@ -98,8 +104,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
 class _MetricsGrid extends StatelessWidget {
   final Member? member;
   final int? daysToGoal;
+  final TrackingSummary? summary;
 
-  const _MetricsGrid({required this.member, required this.daysToGoal});
+  const _MetricsGrid(
+      {required this.member, required this.daysToGoal, required this.summary});
 
   @override
   Widget build(BuildContext context) {
@@ -137,7 +145,42 @@ class _MetricsGrid extends StatelessWidget {
           value: daysToGoal != null ? '$daysToGoal d' : '-',
           color: AppColors.yellow,
         ),
+        MetricCard(
+          label: 'RACHA',
+          value: summary != null ? '${summary!.streakDays} d' : '-',
+          color: AppColors.orange,
+        ),
       ],
+    );
+  }
+}
+
+class _TotalCaloriesCard extends StatelessWidget {
+  final TrackingSummary? summary;
+  const _TotalCaloriesCard({required this.summary});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('CALORÍAS QUEMADAS EN TOTAL',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+            const SizedBox(height: 8),
+            Text(
+              summary != null ? '${summary!.totalCaloriesBurned} CAL' : '-',
+              style: const TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.yellow),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

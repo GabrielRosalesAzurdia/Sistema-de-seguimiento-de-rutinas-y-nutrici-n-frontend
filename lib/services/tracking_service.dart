@@ -21,6 +21,20 @@ class ExerciseLogEntry {
       };
 }
 
+/// Resumen para las cards "CALORÍAS QUEMADAS EN TOTAL" y "RACHA" del
+/// dashboard (ver GET /api/tracking/me/summary/).
+class TrackingSummary {
+  final int totalCaloriesBurned;
+  final int streakDays;
+
+  TrackingSummary({required this.totalCaloriesBurned, required this.streakDays});
+
+  factory TrackingSummary.fromJson(Map<String, dynamic> json) => TrackingSummary(
+        totalCaloriesBurned: json['total_calories_burned'] ?? 0,
+        streakDays: json['streak_days'] ?? 0,
+      );
+}
+
 class TrackingService {
   final _client = ApiClient.instance;
 
@@ -43,5 +57,11 @@ class TrackingService {
   Future<int?> getDaysToGoal() async {
     final response = await _client.dio.get('/ml/me/progress/');
     return response.data['predicted_days_to_goal'];
+  }
+
+  /// 'CALORÍAS QUEMADAS EN TOTAL' y 'RACHA' del dashboard.
+  Future<TrackingSummary> getSummary() async {
+    final response = await _client.dio.get('/tracking/me/summary/');
+    return TrackingSummary.fromJson(response.data);
   }
 }
