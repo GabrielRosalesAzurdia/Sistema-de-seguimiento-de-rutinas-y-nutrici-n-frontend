@@ -36,3 +36,5 @@ flutter:
   uses-material-design: true
   assets:
     - assets/icons/
+    - assets/fitness club logo blanco sin fondo.png
+    - assets/fitness club logo negro sin fondo.png
