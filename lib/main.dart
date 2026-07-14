@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'core/api_client.dart';
 import 'core/theme.dart';
 import 'screens/splash_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await ApiClient.clearStaleTokensOnFirstLaunch();
   runApp(const ClubFitnessApp());
 }
 

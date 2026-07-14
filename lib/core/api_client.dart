@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Cliente HTTP centralizado hacia el backend Django REST Framework.
 ///
@@ -13,7 +14,11 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 /// Ver mobile/README.md para el comando completo por entorno.
 class ApiClient {
   ApiClient._internal() {
-    _dio = Dio(BaseOptions(baseUrl: baseUrl));
+    _dio = Dio(BaseOptions(
+      baseUrl: baseUrl,
+      connectTimeout: const Duration(seconds: 10),
+      receiveTimeout: const Duration(seconds: 10),
+    ));
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
@@ -33,7 +38,11 @@ class ApiClient {
             final refreshToken = await _storage.read(key: 'refresh_token');
             if (refreshToken != null) {
               try {
-                final refreshDio = Dio(BaseOptions(baseUrl: baseUrl));
+                final refreshDio = Dio(BaseOptions(
+                  baseUrl: baseUrl,
+                  connectTimeout: const Duration(seconds: 10),
+                  receiveTimeout: const Duration(seconds: 10),
+                ));
                 final response = await refreshDio.post('/auth/refresh/',
                     data: {'refresh': refreshToken});
                 final newAccess = response.data['access'] as String;
@@ -78,4 +87,30 @@ class ApiClient {
   }
 
   Future<String?> get accessToken => _storage.read(key: 'access_token');
+
+  /// En iOS/macOS, el Keychain (donde vive flutter_secure_storage)
+  /// puede sobrevivir al desinstalado de la app — a diferencia de
+  /// Android, donde sí se borra. Esto hace que un token de una
+  /// instalación anterior parezca una sesión válida y la app salte el
+  /// Login. `SharedPreferences` (NSUserDefaults en iOS) sí se borra al
+  /// desinstalar, así que se usa como señal confiable de "primer
+  /// arranque tras instalar" para invalidar cualquier token viejo que
+  /// haya quedado del Keychain.
+  static Future<void> clearStaleTokensOnFirstLaunch() async {
+    final prefs = await SharedPreferences.getInstance();
+    final hasLaunchedBefore = prefs.getBool('has_launched_before') ?? false;
+    if (!hasLaunchedBefore) {
+      try {
+        await instance.clearTokens();
+      } catch (_) {
+        // Best-effort: en macOS desktop sin el entitlement de
+        // Keychain configurado (com.apple.security.app-sandbox sin
+        // keychain-access-groups), flutter_secure_storage puede
+        // lanzar una PlatformException aquí. No es el target real
+        // del proyecto (solo Android en v1) — no debe tumbar el
+        // arranque de la app en un entorno de desarrollo.
+      }
+      await prefs.setBool('has_launched_before', true);
+    }
+  }
 }
