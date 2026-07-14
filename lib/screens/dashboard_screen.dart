@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import '../core/theme.dart';
 import '../models/member.dart';
 import '../models/nutrition_plan.dart';
+import '../models/routine.dart';
 import '../services/member_service.dart';
 import '../services/nutrition_service.dart';
+import '../services/routine_service.dart';
 import '../services/tracking_service.dart';
 import '../widgets/macro_pill.dart';
 import '../widgets/metric_card.dart';
 import '../widgets/weight_chart.dart';
+import 'routine_detail_screen.dart';
 
 /// Pantalla 'Inicio': réplica funcional del mockup (página 3):
 /// peso actual/meta, % grasa y agua corporal (calculados por el
@@ -23,6 +26,7 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   final _memberService = MemberService();
   final _nutritionService = NutritionService();
+  final _routineService = RoutineService();
   final _trackingService = TrackingService();
 
   Member? _member;
@@ -30,6 +34,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   int? _daysToGoal;
   TrackingSummary? _summary;
   List<WeightPoint> _weightHistory = [];
+  Routine? _todayRoutine;
   NutritionCheckStatus? _todayStatus;
   bool _loading = true;
 
@@ -47,6 +52,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         _trackingService.getDaysToGoal(),
         _trackingService.getSummary(),
         _trackingService.getWeightHistory(),
+        _routineService.getTodayRoutine(),
       ]);
       setState(() {
         _member = results[0] as Member;
@@ -54,6 +60,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         _daysToGoal = results[2] as int?;
         _summary = results[3] as TrackingSummary?;
         _weightHistory = results[4] as List<WeightPoint>;
+        _todayRoutine = results[5] as Routine?;
         _loading = false;
       });
     } catch (_) {
@@ -99,7 +106,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             const SizedBox(height: 20),
             _TotalCaloriesCard(summary: _summary),
             const SizedBox(height: 20),
-            const _TodayRoutineCard(),
+            _TodayRoutineCard(routine: _todayRoutine),
           ],
         ),
       ),
@@ -277,37 +284,62 @@ class _NutritionSemaphore extends StatelessWidget {
   }
 }
 
+/// Rutina de hoy real, según el calendario semanal por género
+/// (GET /api/routines/me/today/, ver RoutineService.getTodayRoutine).
+/// Al tocarla, navega al detalle — igual que desde el listado de
+/// Rutinas. Si es día de descanso (o el miembro no tiene género
+/// asignado todavía), muestra un mensaje en vez de la tarjeta.
 class _TodayRoutineCard extends StatelessWidget {
-  const _TodayRoutineCard();
+  final Routine? routine;
+  const _TodayRoutineCard({required this.routine});
 
   @override
   Widget build(BuildContext context) {
-    // TODO: reemplazar por la rutina del día real (calendario semanal)
-    return const Card(
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('RUTINA DE HOY',
-                    style: TextStyle(
-                        fontSize: 11, color: AppColors.textSecondary)),
-                SizedBox(height: 4),
-                Text('BRAZO Y ESPALDA',
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary)),
-                Text('Aprox 500 calorías · 60 min',
-                    style: TextStyle(
-                        fontSize: 12, color: AppColors.textSecondary)),
-              ],
-            ),
-            Icon(Icons.arrow_forward_ios, color: AppColors.yellow, size: 18),
-          ],
+    if (routine == null) {
+      return const Card(
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Text(
+            'Hoy no tienes una rutina asignada. Consulta con tu coach.',
+            style: TextStyle(color: AppColors.textSecondary),
+          ),
+        ),
+      );
+    }
+    return Card(
+      child: InkWell(
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => RoutineDetailScreen(routineId: routine!.id),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('RUTINA DE HOY',
+                      style: TextStyle(
+                          fontSize: 11, color: AppColors.textSecondary)),
+                  const SizedBox(height: 4),
+                  Text(routine!.categoryDisplay.toUpperCase(),
+                      style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary)),
+                  Text(
+                      'Aprox ${routine!.estimatedCalories} calorías · '
+                      '${routine!.durationLow}-${routine!.durationHigh} min',
+                      style: const TextStyle(
+                          fontSize: 12, color: AppColors.textSecondary)),
+                ],
+              ),
+              const Icon(Icons.arrow_forward_ios, color: AppColors.yellow, size: 18),
+            ],
+          ),
         ),
       ),
     );
