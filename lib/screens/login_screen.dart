@@ -79,7 +79,19 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 16),
               TextButton(
-                onPressed: () {}, // TODO: flujo de recuperación de contraseña
+                // No hay flujo de autoservicio (requeriría envío de correos
+                // desde el backend, fuera de alcance v1) — el remedio real
+                // hoy es que el coach restablezca la contraseña desde el
+                // panel/admin. Se avisa esto en vez de dejar el botón sin
+                // reacción visible.
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                          'Contacta a tu coach para restablecer tu contraseña.'),
+                    ),
+                  );
+                },
                 child: const Text('Olvidé mi contraseña',
                     style: TextStyle(color: AppColors.textSecondary)),
               ),

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import '../core/theme.dart';
 import '../models/member.dart';
+import '../services/auth_service.dart';
 import '../services/member_service.dart';
 import 'edit_profile_screen.dart';
+import 'login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -13,12 +15,22 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final _service = MemberService();
+  final _authService = AuthService();
   late Future<Member> _future;
 
   @override
   void initState() {
     super.initState();
     _future = _service.getMyProfile();
+  }
+
+  Future<void> _logout() async {
+    await _authService.logout();
+    if (!mounted) return;
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (_) => const LoginScreen()),
+      (route) => false,
+    );
   }
 
   @override
@@ -43,14 +55,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   children: [
                     const Text('Perfil',
                         style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
-                    TextButton(
-                      onPressed: () async {
-                        await Navigator.of(context).push(
-                          MaterialPageRoute(builder: (_) => EditProfileScreen(member: member)),
-                        );
-                        setState(() => _future = _service.getMyProfile());
-                      },
-                      child: const Text('Editar', style: TextStyle(color: AppColors.yellow)),
+                    Row(
+                      children: [
+                        TextButton(
+                          onPressed: () async {
+                            await Navigator.of(context).push(
+                              MaterialPageRoute(builder: (_) => EditProfileScreen(member: member)),
+                            );
+                            setState(() => _future = _service.getMyProfile());
+                          },
+                          child: const Text('Editar', style: TextStyle(color: AppColors.yellow)),
+                        ),
+                        IconButton(
+                          onPressed: _logout,
+                          icon: const Icon(Icons.logout, color: AppColors.danger),
+                          tooltip: 'Cerrar sesión',
+                        ),
+                      ],
                     ),
                   ],
                 ),
