@@ -39,4 +39,16 @@ void main() {
 
     expect(find.text('135'), findsOneWidget);
   });
+
+  testWidgets('blocks submit and shows an error when fields are left empty', (tester) async {
+    await tester.pumpWidget(MaterialApp(home: LogRoutineScreen(routine: _fakeRoutine())));
+
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Registrar'));
+    await tester.pump();
+
+    expect(
+      find.text('Completa todos los campos antes de registrar la rutina.'),
+      findsOneWidget,
+    );
+  });
 }

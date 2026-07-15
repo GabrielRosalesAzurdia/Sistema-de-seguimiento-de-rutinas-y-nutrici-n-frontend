@@ -46,14 +46,19 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(routine.categoryDisplay,
-                    style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
-                const Text('La rutina está formada por los siguientes ejercicios',
+                    style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary)),
+                const Text(
+                    'La rutina está formada por los siguientes ejercicios',
                     style: TextStyle(color: AppColors.textSecondary)),
                 const SizedBox(height: 16),
                 Expanded(
                   child: ListView.separated(
                     itemCount: routine.exercises.length,
-                    separatorBuilder: (_, __) => const Divider(color: AppColors.surface),
+                    separatorBuilder: (_, __) =>
+                        const Divider(color: AppColors.surface),
                     itemBuilder: (context, index) {
                       final item = routine.exercises[index];
                       return ListTile(
@@ -63,16 +68,21 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
                           child: Text('${item.order}'),
                         ),
                         title: Text(item.exercise.name,
-                            style: const TextStyle(color: AppColors.textPrimary)),
+                            style:
+                                const TextStyle(color: AppColors.textPrimary)),
                       );
                     },
                   ),
                 ),
-                ElevatedButton(
-                  onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => LogRoutineScreen(routine: routine)),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (_) => LogRoutineScreen(routine: routine)),
+                    ),
+                    child: const Text('Iniciar'),
                   ),
-                  child: const Text('Iniciar / Registrar'),
                 ),
               ],
             ),

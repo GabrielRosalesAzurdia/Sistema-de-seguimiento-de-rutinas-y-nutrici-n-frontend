@@ -4,6 +4,11 @@ import '../core/theme.dart';
 import '../models/member.dart';
 import '../services/tracking_service.dart';
 
+const _monthAbbr = [
+  '', 'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
+  'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic',
+];
+
 /// Card "PESO ACTUAL / META" con la gráfica de línea del historial de
 /// peso (docs/mockups/app/03_dashboard.jpeg). Sin historial todavía
 /// (miembro nuevo, coach no ha registrado medidas), se muestra solo
@@ -55,11 +60,48 @@ class WeightChartCard extends StatelessWidget {
             if (history.length >= 2) ...[
               const SizedBox(height: 16),
               SizedBox(
-                height: 100,
+                height: 130,
                 child: LineChart(
                   LineChartData(
-                    gridData: const FlGridData(show: false),
-                    titlesData: const FlTitlesData(show: false),
+                    gridData: FlGridData(
+                      show: true,
+                      drawVerticalLine: false,
+                      getDrawingHorizontalLine: (_) =>
+                          const FlLine(color: Colors.white10, strokeWidth: 1),
+                    ),
+                    titlesData: FlTitlesData(
+                      topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                      rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                      leftTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          reservedSize: 34,
+                          getTitlesWidget: (value, meta) => Text(
+                            '${value.toInt()} kg',
+                            style: const TextStyle(fontSize: 10, color: AppColors.textSecondary),
+                          ),
+                        ),
+                      ),
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          reservedSize: 22,
+                          getTitlesWidget: (value, meta) {
+                            final index = value.round();
+                            if (index < 0 || index >= history.length) {
+                              return const SizedBox.shrink();
+                            }
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 4),
+                              child: Text(
+                                _monthAbbr[history[index].date.month],
+                                style: const TextStyle(fontSize: 10, color: AppColors.textSecondary),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
                     borderData: FlBorderData(show: false),
                     lineBarsData: [
                       LineChartBarData(

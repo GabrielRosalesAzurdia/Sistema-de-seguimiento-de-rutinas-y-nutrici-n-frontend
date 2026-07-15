@@ -34,7 +34,33 @@ class _LogRoutineScreenState extends State<LogRoutineScreen> {
     };
   }
 
+  bool _allFieldsFilled() {
+    if (_durationController.text.trim().isEmpty ||
+        int.tryParse(_durationController.text) == null) {
+      return false;
+    }
+    for (final form in _forms.values) {
+      if (form.initialWeight.text.trim().isEmpty ||
+          double.tryParse(form.initialWeight.text) == null ||
+          form.finalWeight.text.trim().isEmpty ||
+          double.tryParse(form.finalWeight.text) == null ||
+          form.reps.text.trim().isEmpty ||
+          int.tryParse(form.reps.text) == null) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   Future<void> _submit() async {
+    if (!_allFieldsFilled()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content:
+                Text('Completa todos los campos antes de registrar la rutina.')),
+      );
+      return;
+    }
     setState(() => _saving = true);
     try {
       final entries = widget.routine.exercises.map((item) {
@@ -109,11 +135,14 @@ class _LogRoutineScreenState extends State<LogRoutineScreen> {
             ),
             _numberField(_durationController, 'Tiempo (minutos)'),
             const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: _saving ? null : _submit,
-              child: _saving
-                  ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
-                  : const Text('Registrar'),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _saving ? null : _submit,
+                child: _saving
+                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                    : const Text('Registrar'),
+              ),
             ),
           ],
         ),
