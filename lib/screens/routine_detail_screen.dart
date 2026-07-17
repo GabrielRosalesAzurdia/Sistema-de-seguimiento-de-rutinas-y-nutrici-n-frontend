@@ -74,14 +74,17 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
                     },
                   ),
                 ),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (_) => LogRoutineScreen(routine: routine)),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (_) => LogRoutineScreen(routine: routine)),
+                      ),
+                      child: const Text('Iniciar'),
                     ),
-                    child: const Text('Iniciar'),
                   ),
                 ),
               ],

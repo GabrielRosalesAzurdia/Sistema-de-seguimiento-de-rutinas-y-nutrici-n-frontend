@@ -30,7 +30,8 @@ class _LogRoutineScreenState extends State<LogRoutineScreen> {
   void initState() {
     super.initState();
     _forms = {
-      for (final item in widget.routine.exercises) item.exercise.id: _ExerciseFormState(),
+      for (final item in widget.routine.exercises)
+        item.exercise.id: _ExerciseFormState(),
     };
   }
 
@@ -56,8 +57,8 @@ class _LogRoutineScreenState extends State<LogRoutineScreen> {
     if (!_allFieldsFilled()) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content:
-                Text('Completa todos los campos antes de registrar la rutina.')),
+            content: Text(
+                'Completa todos los campos antes de registrar la rutina.')),
       );
       return;
     }
@@ -99,7 +100,8 @@ class _LogRoutineScreenState extends State<LogRoutineScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Registra el peso que usaste en cada ejercicio y el '
+            const Text(
+                'Registra el peso que usaste en cada ejercicio y el '
                 'tiempo que te tomó completar la rutina',
                 style: TextStyle(color: AppColors.textSecondary)),
             const SizedBox(height: 16),
@@ -115,13 +117,19 @@ class _LogRoutineScreenState extends State<LogRoutineScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(item.exercise.name,
-                              style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.textPrimary)),
                           const SizedBox(height: 8),
                           Row(
                             children: [
-                              Expanded(child: _numberField(form.initialWeight, 'Peso inicial (lb)')),
+                              Expanded(
+                                  child: _numberField(
+                                      form.initialWeight, 'Peso inicial (lb)')),
                               const SizedBox(width: 8),
-                              Expanded(child: _numberField(form.finalWeight, 'Peso final (lb)')),
+                              Expanded(
+                                  child: _numberField(
+                                      form.finalWeight, 'Peso final (lb)')),
                             ],
                           ),
                           const SizedBox(height: 8),
@@ -135,13 +143,19 @@ class _LogRoutineScreenState extends State<LogRoutineScreen> {
             ),
             _numberField(_durationController, 'Tiempo (minutos)'),
             const SizedBox(height: 12),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _saving ? null : _submit,
-                child: _saving
-                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
-                    : const Text('Registrar'),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _saving ? null : _submit,
+                  child: _saving
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2))
+                      : const Text('Registrar'),
+                ),
               ),
             ),
           ],
