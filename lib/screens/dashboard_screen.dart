@@ -210,9 +210,9 @@ class _NutritionMacros extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                MacroPill('PROTEÍNA', plan?.proteinG, AppColors.green),
+                MacroPill('PROTEÍNA', plan?.proteinG, AppColors.orange),
                 MacroPill('CARBOHIDRATOS', plan?.carbsG, AppColors.yellow),
-                MacroPill('GRASAS', plan?.fatsG, AppColors.orange),
+                MacroPill('GRASAS', plan?.fatsG, AppColors.green),
               ],
             ),
           ],

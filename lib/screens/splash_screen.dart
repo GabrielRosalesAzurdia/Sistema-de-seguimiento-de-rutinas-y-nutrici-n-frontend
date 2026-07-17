@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../core/theme.dart';
 import '../services/auth_service.dart';
+import 'change_password_screen.dart';
 import 'login_screen.dart';
 import 'main_nav_screen.dart';
 
@@ -22,15 +23,21 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _decideNext() async {
+    final authService = AuthService();
     final results = await Future.wait([
-      AuthService().isLoggedIn(),
+      authService.isLoggedIn(),
       Future.delayed(const Duration(milliseconds: 1200)),
     ]);
     final isLoggedIn = results[0] as bool;
+    final mustChange = isLoggedIn ? await authService.mustChangePassword() : false;
     if (!mounted) return;
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (_) => isLoggedIn ? const MainNavScreen() : const LoginScreen(),
+        builder: (_) {
+          if (!isLoggedIn) return const LoginScreen();
+          if (mustChange) return const ChangePasswordScreen(isMandatory: true);
+          return const MainNavScreen();
+        },
       ),
     );
   }

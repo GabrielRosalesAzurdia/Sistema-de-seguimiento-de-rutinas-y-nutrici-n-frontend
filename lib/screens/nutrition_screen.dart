@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../core/theme.dart';
 import '../models/nutrition_plan.dart';
 import '../services/nutrition_service.dart';
-import '../widgets/macro_pill.dart';
+import '../widgets/nutrition_chart.dart';
 
 class NutritionScreen extends StatefulWidget {
   const NutritionScreen({super.key});
@@ -54,14 +54,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
                   }
                   return ListView(
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          MacroPill('CARBOHIDRATOS', plan.carbsG, AppColors.yellow),
-                          MacroPill('PROTEÍNAS', plan.proteinG, AppColors.green),
-                          MacroPill('GRASAS', plan.fatsG, AppColors.orange),
-                        ],
-                      ),
+                      NutritionDonutChart(plan: plan),
                       const SizedBox(height: 16),
                       ...plan.meals.map((meal) => _MealCard(meal: meal)),
                     ],

@@ -3,6 +3,7 @@ import '../core/theme.dart';
 import '../models/member.dart';
 import '../services/auth_service.dart';
 import '../services/member_service.dart';
+import 'change_password_screen.dart';
 import 'edit_profile_screen.dart';
 import 'login_screen.dart';
 
@@ -62,9 +63,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             await Navigator.of(context).push(
                               MaterialPageRoute(builder: (_) => EditProfileScreen(member: member)),
                             );
-                            setState(() => _future = _service.getMyProfile());
+                            if (!mounted) return;
+                            setState(() {
+                              _future = _service.getMyProfile();
+                            });
                           },
                           child: const Text('Editar', style: TextStyle(color: AppColors.yellow)),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => const ChangePasswordScreen(isMandatory: false),
+                              ),
+                            );
+                          },
+                          child: const Text('Contraseña', style: TextStyle(color: AppColors.textSecondary)),
                         ),
                         IconButton(
                           onPressed: _logout,

@@ -84,9 +84,24 @@ class ApiClient {
   Future<void> clearTokens() async {
     await _storage.delete(key: 'access_token');
     await _storage.delete(key: 'refresh_token');
+    await saveMustChangePassword(false);
   }
 
   Future<String?> get accessToken => _storage.read(key: 'access_token');
+
+  /// No es secreto como los tokens (solo un flag de UX), pero necesita
+  /// sobrevivir cold-starts para que SplashScreen respete el flujo
+  /// obligatorio de "Crear tu contraseña" si el usuario cerró la app a
+  /// mitad del flujo (login con contraseña temporal, ver ChangePasswordScreen).
+  Future<void> saveMustChangePassword(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('must_change_password', value);
+  }
+
+  Future<bool> getMustChangePassword() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('must_change_password') ?? false;
+  }
 
   /// En iOS/macOS, el Keychain (donde vive flutter_secure_storage)
   /// puede sobrevivir al desinstalado de la app — a diferencia de

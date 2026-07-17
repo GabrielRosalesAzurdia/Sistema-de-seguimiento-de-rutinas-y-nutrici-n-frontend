@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../core/theme.dart';
 import '../services/auth_service.dart';
+import 'change_password_screen.dart';
 import 'main_nav_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -26,14 +27,23 @@ class _LoginScreenState extends State<LoginScreen> {
       _emailController.text.trim(),
       _passwordController.text,
     );
-    setState(() => _loading = false);
-    if (success && mounted) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const MainNavScreen()),
-      );
-    } else {
-      setState(() => _error = 'Usuario o contraseña incorrectos');
+    if (!success) {
+      setState(() {
+        _loading = false;
+        _error = 'Usuario o contraseña incorrectos';
+      });
+      return;
     }
+    final mustChange = await _authService.mustChangePassword();
+    if (!mounted) return;
+    setState(() => _loading = false);
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => mustChange
+            ? const ChangePasswordScreen(isMandatory: true)
+            : const MainNavScreen(),
+      ),
+    );
   }
 
   @override
