@@ -29,7 +29,8 @@ class _SplashScreenState extends State<SplashScreen> {
       Future.delayed(const Duration(milliseconds: 1200)),
     ]);
     final isLoggedIn = results[0] as bool;
-    final mustChange = isLoggedIn ? await authService.mustChangePassword() : false;
+    final mustChange =
+        isLoggedIn ? await authService.mustChangePassword() : false;
     if (!mounted) return;
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
@@ -56,15 +57,6 @@ class _SplashScreenState extends State<SplashScreen> {
               height: 120,
             ),
             const SizedBox(height: 16),
-            const Text(
-              'FITNESS CLUB',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 2,
-              ),
-            ),
           ],
         ),
       ),
