@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'core/api_client.dart';
+import 'core/navigation.dart';
 import 'core/theme.dart';
 import 'screens/splash_screen.dart';
 
@@ -17,6 +18,7 @@ class ClubFitnessApp extends StatelessWidget {
     return MaterialApp(
       title: 'Club Fitness App',
       debugShowCheckedModeBanner: false,
+      navigatorKey: navigatorKey,
       theme: AppTheme.darkTheme,
       home: const SplashScreen(),
     );

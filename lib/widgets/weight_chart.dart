@@ -134,6 +134,13 @@ class WeightChartCard extends StatelessWidget {
                 for (var i = 0; i < history.length; i++) FlSpot(offsets[i], history[i].weightKg),
               ],
               isCurved: true,
+              // Con pocos puntos espaciados de forma desigual (varios
+              // pesajes en el mismo mes), el spline de Bezier de
+              // fl_chart puede sobrepasar el rango real de los datos
+              // y dibujar un "dip" por debajo del mínimo — este flag
+              // limita la curva para que nunca salga del rango real
+              // de los puntos vecinos (feedback de la prueba E2E).
+              preventCurveOverShooting: true,
               color: AppColors.yellow,
               barWidth: 3,
               dotData: const FlDotData(show: false),

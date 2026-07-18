@@ -1,6 +1,9 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../screens/login_screen.dart';
+import 'navigation.dart';
 
 /// Cliente HTTP centralizado hacia el backend Django REST Framework.
 ///
@@ -31,10 +34,17 @@ class ApiClient {
         onError: (error, handler) async {
           // Si el access token expiró (401), se intenta refrescar una
           // sola vez con el refresh token guardado y se reintenta la
-          // request original. Si el refresh también falla, se borran
-          // los tokens (el usuario queda efectivamente deslogueado en
-          // la próxima pantalla que consulte isLoggedIn()).
-          if (error.response?.statusCode == 401) {
+          // request original. El flag `retried` en `extra` evita que
+          // ese reintento vuelva a disparar este mismo interceptor en
+          // bucle: si el usuario fue desactivado, /auth/refresh/ sigue
+          // devolviendo 200 (no valida is_active), pero el reintento
+          // vuelve a fallar 401 — sin este guard eso recursaba sin fin
+          // (loading infinito + ráfaga de peticiones, feedback de la
+          // prueba E2E). Cualquier 401 terminal (refresh fallido, o
+          // reintento que sigue en 401) cierra la sesión localmente y
+          // navega a Login.
+          final alreadyRetried = error.requestOptions.extra['retried'] == true;
+          if (error.response?.statusCode == 401 && !alreadyRetried) {
             final refreshToken = await _storage.read(key: 'refresh_token');
             if (refreshToken != null) {
               try {
@@ -50,12 +60,17 @@ class ApiClient {
 
                 final retryOptions = error.requestOptions;
                 retryOptions.headers['Authorization'] = 'Bearer $newAccess';
+                retryOptions.extra['retried'] = true;
                 final retryResponse = await _dio.fetch(retryOptions);
                 return handler.resolve(retryResponse);
               } catch (_) {
                 await clearTokens();
+                _forceLogout();
               }
             }
+          } else if (error.response?.statusCode == 401 && alreadyRetried) {
+            await clearTokens();
+            _forceLogout();
           }
           handler.next(error);
         },
@@ -72,13 +87,28 @@ class ApiClient {
 
   late final Dio _dio;
   final _storage = const FlutterSecureStorage();
+  bool _forcingLogout = false;
 
   Dio get dio => _dio;
+
+  /// Fuerza la navegación a Login cuando una sesión deja de ser
+  /// válida. Varias peticiones en paralelo (ej. el Dashboard dispara
+  /// 6 a la vez) pueden detectar el 401 terminal casi al mismo
+  /// tiempo — `_forcingLogout` evita apilar navegaciones redundantes.
+  void _forceLogout() {
+    if (_forcingLogout) return;
+    _forcingLogout = true;
+    navigatorKey.currentState?.pushAndRemoveUntil(
+      MaterialPageRoute(builder: (_) => const LoginScreen()),
+      (route) => false,
+    );
+  }
 
   Future<void> saveTokens(
       {required String access, required String refresh}) async {
     await _storage.write(key: 'access_token', value: access);
     await _storage.write(key: 'refresh_token', value: refresh);
+    _forcingLogout = false;
   }
 
   Future<void> clearTokens() async {
