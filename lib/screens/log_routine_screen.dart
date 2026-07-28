@@ -3,9 +3,8 @@ import '../core/theme.dart';
 import '../models/routine.dart';
 import '../services/tracking_service.dart';
 
-/// "Registra el peso que usaste en cada ejercicio y el tiempo que te
-/// tomó completar la rutina" (mockup, página 6). Ajuste de reunión 2
-/// (A5): se registra peso inicial Y final, más repeticiones hechas.
+/// Registra, por cada ejercicio, peso inicial y final (lb) y
+/// repeticiones hechas, más el tiempo total de la rutina.
 class LogRoutineScreen extends StatefulWidget {
   final Routine routine;
   const LogRoutineScreen({super.key, required this.routine});

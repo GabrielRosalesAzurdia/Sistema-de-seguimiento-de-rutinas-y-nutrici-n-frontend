@@ -38,9 +38,8 @@ class ApiClient {
           // ese reintento vuelva a disparar este mismo interceptor en
           // bucle: si el usuario fue desactivado, /auth/refresh/ sigue
           // devolviendo 200 (no valida is_active), pero el reintento
-          // vuelve a fallar 401 — sin este guard eso recursaba sin fin
-          // (loading infinito + ráfaga de peticiones, feedback de la
-          // prueba E2E). Cualquier 401 terminal (refresh fallido, o
+          // vuelve a fallar 401 — sin este guard entraría en bucle
+          // infinito. Cualquier 401 terminal (refresh fallido, o
           // reintento que sigue en 401) cierra la sesión localmente y
           // navega a Login.
           final alreadyRetried = error.requestOptions.extra['retried'] == true;

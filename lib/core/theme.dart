@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
-/// Paleta de marca confirmada con el gimnasio (Acta 1, 27/mar/2026 y
-/// Cuestionario 2, A1): fondo negro con acentos amarillo, verde y
-/// naranja "chinton". Todo el estilo visual fue aprobado sin cambios
-/// ("Todo está bien").
+/// Paleta de marca: fondo negro con acentos amarillo, verde y naranja
+/// "chintón".
 class AppColors {
   static const background = Color(0xFF121212);
   static const surface = Color(0xFF1E1E1E);

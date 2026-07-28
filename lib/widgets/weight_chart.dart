@@ -10,9 +10,8 @@ const _monthAbbr = [
 ];
 
 /// Card "PESO ACTUAL / META" con la gráfica de línea del historial de
-/// peso (docs/mockups/app/03_dashboard.jpeg). Sin historial todavía
-/// (miembro nuevo, coach no ha registrado medidas), se muestra solo
-/// el valor actual/meta sin gráfica.
+/// peso. Sin historial todavía (miembro nuevo, coach no ha registrado
+/// medidas), se muestra solo el valor actual/meta sin gráfica.
 class WeightChartCard extends StatelessWidget {
   final Member? member;
   final List<WeightPoint> history;
@@ -70,8 +69,7 @@ class WeightChartCard extends StatelessWidget {
   // El eje X usa días transcurridos desde el primer registro (no el
   // índice de la lista) para que la posición de cada punto refleje su
   // fecha real — si hay 2 pesajes en el mismo mes, quedan visualmente
-  // juntos en vez de equiespaciados como si fueran meses distintos
-  // (feedback de la prueba E2E).
+  // juntos en vez de equiespaciados como si fueran meses distintos.
   Widget _buildChart() {
     final firstDate = history.first.date;
     final offsets = [
@@ -139,7 +137,7 @@ class WeightChartCard extends StatelessWidget {
               // fl_chart puede sobrepasar el rango real de los datos
               // y dibujar un "dip" por debajo del mínimo — este flag
               // limita la curva para que nunca salga del rango real
-              // de los puntos vecinos (feedback de la prueba E2E).
+              // de los puntos vecinos.
               preventCurveOverShooting: true,
               color: AppColors.yellow,
               barWidth: 3,

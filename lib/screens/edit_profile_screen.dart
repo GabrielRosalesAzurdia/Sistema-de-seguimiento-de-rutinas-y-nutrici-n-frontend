@@ -4,9 +4,8 @@ import '../models/member.dart';
 import '../services/member_service.dart';
 
 /// El usuario edita nombre, edad, altura, meta fitness y nivel de
-/// actividad. Peso y medidas corporales NO son editables aquí por
-/// decisión de negocio (solo el coach los registra desde el panel
-/// admin, para evitar datos erróneos).
+/// actividad. Peso y medidas corporales no son editables aquí: solo
+/// el coach los registra desde el panel admin.
 class EditProfileScreen extends StatefulWidget {
   final Member member;
   const EditProfileScreen({super.key, required this.member});

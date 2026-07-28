@@ -4,8 +4,8 @@ import 'routines_screen.dart';
 import 'nutrition_screen.dart';
 import 'profile_screen.dart';
 
-/// Flujo de navegación confirmado con el gimnasio (A2, Cuestionario 2:
-/// "Todo está bien"): Inicio → Rutinas → Nutrición → Perfil.
+/// Flujo de navegación (bottom nav): Inicio → Rutinas → Nutrición →
+/// Perfil.
 class MainNavScreen extends StatefulWidget {
   const MainNavScreen({super.key});
 

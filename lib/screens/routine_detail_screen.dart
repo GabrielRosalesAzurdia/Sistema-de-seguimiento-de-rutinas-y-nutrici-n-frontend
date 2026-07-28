@@ -4,10 +4,9 @@ import '../models/routine.dart';
 import '../services/routine_service.dart';
 import 'log_routine_screen.dart';
 
-/// Detalle de una rutina: solo muestra el ORDEN de los ejercicios (no
-/// se marca completado por ejercicio individual, ver Cuestionario
-/// Requerimientos, B5: "la app no debe marcar completado por
-/// ejercicio, solo mostrar el orden").
+/// Detalle de una rutina: muestra el orden de los ejercicios. No hay
+/// marcado de completado por ejercicio individual — la rutina
+/// completa se marca como terminada en LogRoutineScreen.
 class RoutineDetailScreen extends StatefulWidget {
   final int routineId;
   const RoutineDetailScreen({super.key, required this.routineId});

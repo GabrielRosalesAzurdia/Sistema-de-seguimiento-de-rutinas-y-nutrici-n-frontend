@@ -12,10 +12,10 @@ import '../widgets/metric_card.dart';
 import '../widgets/weight_chart.dart';
 import 'routine_detail_screen.dart';
 
-/// Pantalla 'Inicio': réplica funcional del mockup (página 3):
-/// peso actual/meta, % grasa y agua corporal (calculados por el
-/// sistema), días para meta (ML), racha, macros del día, semáforo de
-/// nutrición diario, calorías quemadas totales y rutina de hoy.
+/// Pantalla 'Inicio': peso actual/meta, % grasa y agua corporal
+/// (calculados por el sistema), días para meta (ML), racha, macros
+/// del día, semáforo de nutrición diario, calorías quemadas totales y
+/// rutina de hoy.
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 

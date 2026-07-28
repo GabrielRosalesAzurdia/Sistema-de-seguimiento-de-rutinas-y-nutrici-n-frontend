@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 import '../core/theme.dart';
 import '../models/nutrition_plan.dart';
 
-/// Dona de macros + leyenda (docs/mockups: "nutricion chart mockup.png"
-/// — no se exportó del mockup original de Figma por un error, feedback
-/// de la prueba E2E). Calorías totales al centro; el tamaño de cada
-/// gajo es proporcional a su aporte calórico real (carbos/proteína =
-/// 4 kcal/g, grasas = 9 kcal/g), no a los gramos crudos.
+/// Dona de macros + leyenda, con calorías totales al centro. El
+/// tamaño de cada gajo es proporcional a su aporte calórico real
+/// (carbohidratos/proteína = 4 kcal/g, grasas = 9 kcal/g), no a los
+/// gramos crudos.
 class NutritionDonutChart extends StatelessWidget {
   final NutritionPlan plan;
 
