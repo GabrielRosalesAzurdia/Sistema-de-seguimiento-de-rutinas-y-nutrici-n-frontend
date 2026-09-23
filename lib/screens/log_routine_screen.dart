@@ -115,7 +115,7 @@ class _LogRoutineScreenState extends State<LogRoutineScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(item.exercise.name,
+                          Text(item.exercise.displayName,
                               style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: AppColors.textPrimary)),

@@ -1,9 +1,17 @@
+final _trailingParentheticalPattern = RegExp(r'\s*\([^)]*\)\s*$');
+
 class Exercise {
   final int id;
   final String name;
   final String? iconUrl;
 
   Exercise({required this.id, required this.name, this.iconUrl});
+
+  /// `name` tal como está en el catálogo (p. ej. "Prensa (Circuito)"):
+  /// el sufijo entre paréntesis distingue en la base de datos un
+  /// ejercicio duplicado para otra rutina, pero no le interesa al
+  /// usuario final — se oculta solo al mostrarlo en la app.
+  String get displayName => name.replaceAll(_trailingParentheticalPattern, '');
 
   factory Exercise.fromJson(Map<String, dynamic> json) => Exercise(
         id: json['id'],

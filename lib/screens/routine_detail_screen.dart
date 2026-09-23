@@ -66,7 +66,7 @@ class _RoutineDetailScreenState extends State<RoutineDetailScreen> {
                           foregroundColor: Colors.black,
                           child: Text('${item.order}'),
                         ),
-                        title: Text(item.exercise.name,
+                        title: Text(item.exercise.displayName,
                             style:
                                 const TextStyle(color: AppColors.textPrimary)),
                       );
