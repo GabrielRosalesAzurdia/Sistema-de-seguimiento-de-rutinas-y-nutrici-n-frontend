@@ -1,5 +1,14 @@
 final _trailingParentheticalPattern = RegExp(r'\s*\([^)]*\)\s*$');
 
+/// Oculta el sufijo entre paréntesis del final de un nombre de
+/// ejercicio (p. ej. "Prensa (Circuito)" -> "Prensa"): en la base de
+/// datos distingue un ejercicio duplicado para otra rutina, pero no le
+/// interesa al usuario final. Función reusable porque el nombre llega
+/// como texto plano (no como `Exercise`) en el historial y la gráfica
+/// de progreso, además de en el catálogo de rutinas.
+String stripExerciseNameSuffix(String name) =>
+    name.replaceAll(_trailingParentheticalPattern, '');
+
 class Exercise {
   final int id;
   final String name;
@@ -7,11 +16,8 @@ class Exercise {
 
   Exercise({required this.id, required this.name, this.iconUrl});
 
-  /// `name` tal como está en el catálogo (p. ej. "Prensa (Circuito)"):
-  /// el sufijo entre paréntesis distingue en la base de datos un
-  /// ejercicio duplicado para otra rutina, pero no le interesa al
-  /// usuario final — se oculta solo al mostrarlo en la app.
-  String get displayName => name.replaceAll(_trailingParentheticalPattern, '');
+  /// `name` tal como está en el catálogo — ver [stripExerciseNameSuffix].
+  String get displayName => stripExerciseNameSuffix(name);
 
   factory Exercise.fromJson(Map<String, dynamic> json) => Exercise(
         id: json['id'],

@@ -5,6 +5,7 @@ import '../services/auth_service.dart';
 import '../services/member_service.dart';
 import 'change_password_screen.dart';
 import 'edit_profile_screen.dart';
+import 'history_screen.dart';
 import 'login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -107,6 +108,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 _Section('NIVEL DE ACTIVIDAD FÍSICA', [
                   _InfoRow('Nivel', member.activityLevel.replaceAll('_', ' ')),
                 ]),
+                Card(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  child: ListTile(
+                    leading: const Icon(Icons.history, color: AppColors.yellow),
+                    title: const Text('Historial de rutinas',
+                        style: TextStyle(color: AppColors.textPrimary)),
+                    trailing: const Icon(Icons.arrow_forward_ios,
+                        color: AppColors.yellow, size: 16),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const HistoryScreen()),
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 8),
                 const Text(
                   'El peso y las medidas corporales son registrados por tu '
