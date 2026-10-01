@@ -3,10 +3,8 @@ import '../core/theme.dart';
 import '../services/tracking_service.dart';
 import 'history_detail_screen.dart';
 
-/// Historial de sesiones de rutina del usuario, por fecha (reemplaza
-/// las capturas de pantalla que usaban antes para llevar su propio
-/// registro). Solo lectura, paginado (20 por página) contra
-/// GET /api/tracking/me/workout-history/.
+/// Historial de sesiones de rutina del usuario, por fecha. Solo lectura,
+/// paginado (20 por página).
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
 

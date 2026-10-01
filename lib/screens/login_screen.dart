@@ -89,11 +89,8 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 16),
               TextButton(
-                // No hay flujo de autoservicio (requeriría envío de correos
-                // desde el backend, fuera de alcance v1) — el remedio real
-                // hoy es que el coach restablezca la contraseña desde el
-                // panel/admin. Se avisa esto en vez de dejar el botón sin
-                // reacción visible.
+                // * No hay autoservicio: solo el coach puede restablecer
+                // la contraseña desde el panel.
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(

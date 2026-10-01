@@ -4,10 +4,8 @@ import '../services/auth_service.dart';
 import 'login_screen.dart';
 import 'main_nav_screen.dart';
 
-/// Pantalla "Crear tu contraseña" — obligatoria tras el primer login
-/// con una contraseña temporal generada por el panel. También se usa,
-/// de forma no obligatoria, desde Perfil para cambiar la contraseña
-/// en cualquier momento.
+/// Pantalla "Crear tu contraseña" — obligatoria tras el primer login con
+/// una contraseña temporal; también reusada desde Perfil, de forma opcional.
 class ChangePasswordScreen extends StatefulWidget {
   final bool isMandatory;
 

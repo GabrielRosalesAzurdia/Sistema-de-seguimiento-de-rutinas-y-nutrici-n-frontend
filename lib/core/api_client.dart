@@ -32,16 +32,8 @@ class ApiClient {
           handler.next(options);
         },
         onError: (error, handler) async {
-          // Si el access token expiró (401), se intenta refrescar una
-          // sola vez con el refresh token guardado y se reintenta la
-          // request original. El flag `retried` en `extra` evita que
-          // ese reintento vuelva a disparar este mismo interceptor en
-          // bucle: si el usuario fue desactivado, /auth/refresh/ sigue
-          // devolviendo 200 (no valida is_active), pero el reintento
-          // vuelve a fallar 401 — sin este guard entraría en bucle
-          // infinito. Cualquier 401 terminal (refresh fallido, o
-          // reintento que sigue en 401) cierra la sesión localmente y
-          // navega a Login.
+          // Ante un 401, refresca el access token una vez y reintenta la request original.
+          // ! El flag `retried` evita reintentar en bucle infinito; un 401 terminal cierra sesión y navega a Login.
           final alreadyRetried = error.requestOptions.extra['retried'] == true;
           if (error.response?.statusCode == 401 && !alreadyRetried) {
             final refreshToken = await _storage.read(key: 'refresh_token');
@@ -90,10 +82,8 @@ class ApiClient {
 
   Dio get dio => _dio;
 
-  /// Fuerza la navegación a Login cuando una sesión deja de ser
-  /// válida. Varias peticiones en paralelo (ej. el Dashboard dispara
-  /// 6 a la vez) pueden detectar el 401 terminal casi al mismo
-  /// tiempo — `_forcingLogout` evita apilar navegaciones redundantes.
+  /// Navega a Login tras una sesión inválida.
+  /// * `_forcingLogout` evita apilar navegaciones si varias requests en paralelo detectan el 401 a la vez.
   void _forceLogout() {
     if (_forcingLogout) return;
     _forcingLogout = true;
@@ -118,10 +108,7 @@ class ApiClient {
 
   Future<String?> get accessToken => _storage.read(key: 'access_token');
 
-  /// No es secreto como los tokens (solo un flag de UX), pero necesita
-  /// sobrevivir cold-starts para que SplashScreen respete el flujo
-  /// obligatorio de "Crear tu contraseña" si el usuario cerró la app a
-  /// mitad del flujo (login con contraseña temporal, ver ChangePasswordScreen).
+  /// Flag de UX persistido para que SplashScreen fuerce "Crear tu contraseña" si quedó pendiente.
   Future<void> saveMustChangePassword(bool value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('must_change_password', value);
@@ -132,14 +119,9 @@ class ApiClient {
     return prefs.getBool('must_change_password') ?? false;
   }
 
-  /// En iOS/macOS, el Keychain (donde vive flutter_secure_storage)
-  /// puede sobrevivir al desinstalado de la app — a diferencia de
-  /// Android, donde sí se borra. Esto hace que un token de una
-  /// instalación anterior parezca una sesión válida y la app salte el
-  /// Login. `SharedPreferences` (NSUserDefaults en iOS) sí se borra al
-  /// desinstalar, así que se usa como señal confiable de "primer
-  /// arranque tras instalar" para invalidar cualquier token viejo que
-  /// haya quedado del Keychain.
+  /// ! En iOS/macOS el Keychain sobrevive al desinstalado (a diferencia de Android), así que un token
+  /// viejo podría parecer una sesión válida. `SharedPreferences` sí se borra al desinstalar, se usa
+  /// como señal de "primer arranque" para limpiar cualquier token residual del Keychain.
   static Future<void> clearStaleTokensOnFirstLaunch() async {
     final prefs = await SharedPreferences.getInstance();
     final hasLaunchedBefore = prefs.getBool('has_launched_before') ?? false;
@@ -147,12 +129,7 @@ class ApiClient {
       try {
         await instance.clearTokens();
       } catch (_) {
-        // Best-effort: en macOS desktop sin el entitlement de
-        // Keychain configurado (com.apple.security.app-sandbox sin
-        // keychain-access-groups), flutter_secure_storage puede
-        // lanzar una PlatformException aquí. No es el target real
-        // del proyecto (solo Android en v1) — no debe tumbar el
-        // arranque de la app en un entorno de desarrollo.
+        // Best-effort: puede fallar en macOS desktop sin entitlement de Keychain configurado.
       }
       await prefs.setBool('has_launched_before', true);
     }

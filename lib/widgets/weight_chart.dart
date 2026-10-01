@@ -9,9 +9,8 @@ const _monthAbbr = [
   'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic',
 ];
 
-/// Card "PESO ACTUAL / META" con la gráfica de línea del historial de
-/// peso. Sin historial todavía (miembro nuevo, coach no ha registrado
-/// medidas), se muestra solo el valor actual/meta sin gráfica.
+/// Card "PESO ACTUAL / META" con la gráfica de línea del historial de peso.
+/// Sin al menos 2 registros, muestra solo el valor actual/meta sin gráfica.
 class WeightChartCard extends StatelessWidget {
   final Member? member;
   final List<WeightPoint> history;
@@ -66,10 +65,8 @@ class WeightChartCard extends StatelessWidget {
     );
   }
 
-  // El eje X usa días transcurridos desde el primer registro (no el
-  // índice de la lista) para que la posición de cada punto refleje su
-  // fecha real — si hay 2 pesajes en el mismo mes, quedan visualmente
-  // juntos en vez de equiespaciados como si fueran meses distintos.
+  // * Eje X en días transcurridos desde el primer registro (no el índice
+  // de la lista), para que cada punto quede posicionado según su fecha real.
   Widget _buildChart() {
     final firstDate = history.first.date;
     final offsets = [
@@ -132,12 +129,8 @@ class WeightChartCard extends StatelessWidget {
                 for (var i = 0; i < history.length; i++) FlSpot(offsets[i], history[i].weightKg),
               ],
               isCurved: true,
-              // Con pocos puntos espaciados de forma desigual (varios
-              // pesajes en el mismo mes), el spline de Bezier de
-              // fl_chart puede sobrepasar el rango real de los datos
-              // y dibujar un "dip" por debajo del mínimo — este flag
-              // limita la curva para que nunca salga del rango real
-              // de los puntos vecinos.
+              // * Evita que el spline de Bezier sobrepase el rango real de
+              // los puntos vecinos.
               preventCurveOverShooting: true,
               color: AppColors.yellow,
               barWidth: 3,

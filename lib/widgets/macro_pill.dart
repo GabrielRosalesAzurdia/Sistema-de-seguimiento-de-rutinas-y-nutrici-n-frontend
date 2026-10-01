@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import '../core/theme.dart';
 
 /// Par label/valor de un macro (proteína/carbohidratos/grasas), usado
-/// en el Dashboard y en la pantalla de Nutrición (antes duplicado como
-/// `_MacroPill` y `_MacroChip` respectivamente).
+/// en el Dashboard y en la pantalla de Nutrición.
 class MacroPill extends StatelessWidget {
   final String label;
   final int? grams;

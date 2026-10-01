@@ -4,10 +4,9 @@ import '../models/routine.dart';
 import '../services/tracking_service.dart';
 import 'exercise_progress_screen.dart';
 
-/// Detalle de una sesión del historial: peso inicial/final y
-/// repeticiones por ejercicio (solo lectura, con los datos que ya
-/// captura LogRoutineScreen al registrar). Recibe la sesión ya
-/// cargada desde HistoryScreen — no hace una llamada nueva al backend.
+/// Detalle de una sesión del historial: peso inicial/final y repeticiones
+/// por ejercicio, solo lectura. Recibe la sesión ya cargada desde
+/// HistoryScreen, no hace una llamada nueva al backend.
 class HistoryDetailScreen extends StatelessWidget {
   final WorkoutHistorySession session;
 

@@ -1,10 +1,6 @@
 import '../core/api_client.dart';
 
-/// DRF serializa los `DecimalField` (peso inicial/final) como string
-/// JSON ("100.0"), no como número — a diferencia de los campos que se
-/// arman a mano con un dict plano (como exercise-progress), que sí
-/// llegan como número. Se parsea de forma robusta para no asumir uno u
-/// otro.
+/// Parsea un `DecimalField` del backend, que puede llegar como string JSON o como número.
 double _parseDecimal(dynamic value) =>
     value is num ? value.toDouble() : double.parse(value as String);
 

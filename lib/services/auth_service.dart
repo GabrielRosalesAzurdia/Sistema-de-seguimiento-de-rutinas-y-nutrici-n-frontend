@@ -29,10 +29,7 @@ class AuthService {
 
   Future<bool> mustChangePassword() => _client.getMustChangePassword();
 
-  /// Devuelve `null` en éxito, o un mensaje de error legible si falla
-  /// (contraseña actual incorrecta, nueva contraseña no cumple los
-  /// requisitos, etc. — se toma del primer error que devuelva el
-  /// serializer del backend).
+  /// Devuelve `null` en éxito, o el primer mensaje de error del serializer si falla.
   Future<String?> changePassword(String currentPassword, String newPassword) async {
     try {
       await _client.dio.post('/auth/change-password/', data: {

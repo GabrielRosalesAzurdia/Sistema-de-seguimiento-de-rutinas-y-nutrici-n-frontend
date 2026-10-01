@@ -5,9 +5,9 @@ import 'change_password_screen.dart';
 import 'login_screen.dart';
 import 'main_nav_screen.dart';
 
-/// Pantalla de splash inicial (mockup 01): logo del gimnasio sobre
-/// fondo amarillo. Mientras se muestra, resuelve si hay sesión activa
-/// y navega a Login o al flujo principal (reemplaza a `_RootDecider`).
+/// Pantalla de splash inicial: logo del gimnasio sobre fondo amarillo.
+/// Mientras se muestra, resuelve si hay sesión activa y navega a Login
+/// o al flujo principal.
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 

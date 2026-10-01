@@ -1,11 +1,7 @@
 final _trailingParentheticalPattern = RegExp(r'\s*\([^)]*\)\s*$');
 
-/// Oculta el sufijo entre paréntesis del final de un nombre de
-/// ejercicio (p. ej. "Prensa (Circuito)" -> "Prensa"): en la base de
-/// datos distingue un ejercicio duplicado para otra rutina, pero no le
-/// interesa al usuario final. Función reusable porque el nombre llega
-/// como texto plano (no como `Exercise`) en el historial y la gráfica
-/// de progreso, además de en el catálogo de rutinas.
+// * El sufijo entre paréntesis (p. ej. "Prensa (Circuito)") solo distingue
+// filas duplicadas en la base de datos, no debe mostrarse al usuario.
 String stripExerciseNameSuffix(String name) =>
     name.replaceAll(_trailingParentheticalPattern, '');
 
@@ -39,8 +35,7 @@ class RoutineExerciseItem {
       );
 }
 
-/// Rutina semanal (una de las 7 categorías: Pierna-Cuádriceps, Pecho,
-/// Brazos y Espalda, Cardio, ABS, Pierna-Glúteos, Hombro).
+/// Rutina de una categoría del catálogo (ver RoutineCategory en el backend).
 class Routine {
   final int id;
   final String category;

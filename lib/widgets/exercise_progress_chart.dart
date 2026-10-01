@@ -3,13 +3,8 @@ import 'package:flutter/material.dart';
 import '../core/theme.dart';
 import '../services/tracking_service.dart';
 
-/// Gráfica de línea del peso final registrado para un ejercicio, a
-/// través de sus sesiones históricas (pantalla 'Historial' -> detalle
-/// de sesión -> "Ver progreso"). Mismo enfoque de eje X que
-/// WeightChartCard (días transcurridos desde el primer punto, no el
-/// índice de la lista), adaptado a fechas de sesiones de entrenamiento
-/// (más frecuentes que los pesajes mensuales del coach, así que el
-/// eje X muestra día/mes en vez de solo el mes).
+/// Gráfica de línea del peso final registrado para un ejercicio, a través
+/// de sus sesiones históricas. Requiere al menos 2 sesiones registradas.
 class ExerciseProgressChart extends StatelessWidget {
   final List<ExerciseProgressPoint> points;
 
